@@ -15,6 +15,9 @@ my %META = (
 			Role::Tiny                   0
 			Class::Method::Modifiers     0
 		)} },
+		test => { requires => {qw(
+			Net::OAuth2Server::Request::Token::AuthorizationCode 0.003
+		)} },
 	},
 	dynamic_config => 0,
 	resources      => {

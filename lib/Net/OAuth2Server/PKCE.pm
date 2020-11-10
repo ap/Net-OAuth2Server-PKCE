@@ -6,9 +6,6 @@ our $VERSION = '0.001';
 
 use Digest::SHA ();
 
-sub VALID_CHALLENGE () { qr/\A   [-_A-Za-z0-9]{43}     \z/x }
-sub VALID_VERIFIER  () { qr/\A [-._~A-Za-z0-9]{43,128} \z/x }
-
 our %transform = (
 	plain => sub () { $_[0] },
 	S256  => sub () { my $v = &Digest::SHA::sha256_base64; $v =~ y[+/][-_]; $v },
@@ -27,8 +24,10 @@ sub fresh__get_pkce_challenge {
 	my ( $challenge, $method ) = $self->params( qw( code_challenge code_challenge_method ) );
 	$self->set_error_invalid_request( "unsupported code_challenge_method: $method" ), return
 		if not exists $transform{ $method };
-	$self->set_error_invalid_request( 'malformed code_challenge value ' . $challenge ), return
-		if $challenge !~ Net::OAuth2Server::PKCE::VALID_CHALLENGE;
+	$self->set_error_invalid_request( sprintf 'bad code_challenge length: %s (must be 43)', length $challenge ), return
+		unless 43 == length $challenge;
+	$self->set_error_invalid_request( sprintf 'bad character in code_challenge: 0x%02X at position %d', ord $1, -1 + pos $challenge ), return
+		if $challenge =~ /([^A-Za-z0-9_-])/g;
 	( $challenge, $method );
 }
 fresh get_pkce_challenge => \&fresh__get_pkce_challenge;
@@ -60,8 +59,10 @@ sub fresh__get_pkce_challenge {
 		or Carp::croak( "bad code_challenge_method: $method" );
 	$self->ensure_required( 'code_verifier' ) or return;
 	my $verifier = $self->param( 'code_verifier' );
-	$self->set_error_invalid_request( 'malformed code_verifier value' ), return
-		if $verifier !~ Net::OAuth2Server::PKCE::VALID_VERIFIER;
+	$self->set_error_invalid_request( sprintf 'bad code_challenge length: %s (must be 43 (min) to 128 (max))', length $verifier ), return
+		unless grep 43 <= $_ && $_ <= 128, length $verifier;
+	$self->set_error_invalid_request( sprintf 'bad character in code_challenge: 0x%02X at position %d', ord $1, -1 + pos $verifier ), return
+		if $verifier =~ /([^.~A-Za-z0-9_-])/g;
 	$t->( $verifier );
 }
 fresh get_pkce_challenge => \&fresh__get_pkce_challenge;

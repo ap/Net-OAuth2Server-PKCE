@@ -16,6 +16,8 @@ my %META = (
 			Class::Method::Modifiers     0
 		)} },
 		test => { requires => {qw(
+			Data::Dumper                                             0
+			Net::OAuth2Server::Request::Authorization            0.003
 			Net::OAuth2Server::Request::Token::AuthorizationCode 0.003
 		)} },
 	},

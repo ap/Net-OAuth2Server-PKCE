@@ -59,9 +59,9 @@ sub fresh__get_pkce_challenge {
 		or Carp::croak( "bad code_challenge_method: $method" );
 	$self->ensure_required( 'code_verifier' ) or return;
 	my $verifier = $self->param( 'code_verifier' );
-	$self->set_error_invalid_request( sprintf 'bad code_challenge length: %s (must be 43 (min) to 128 (max))', length $verifier ), return
+	$self->set_error_invalid_request( sprintf 'bad code_verifier length: %s (must be 43 (min) to 128 (max))', length $verifier ), return
 		unless grep 43 <= $_ && $_ <= 128, length $verifier;
-	$self->set_error_invalid_request( sprintf 'bad character in code_challenge: 0x%02X at position %d', ord $1, -1 + pos $verifier ), return
+	$self->set_error_invalid_request( sprintf 'bad character in code_verifier: 0x%02X at position %d', ord $1, -1 + pos $verifier ), return
 		if $verifier =~ /([^.~A-Za-z0-9_-])/g;
 	$t->( $verifier );
 }

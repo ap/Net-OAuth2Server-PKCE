@@ -1,8 +1,7 @@
 use strict; use warnings;
 
 package Net::OAuth2Server::PKCE;
-
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use Digest::SHA ();
 
@@ -12,8 +11,7 @@ our %transform = (
 );
 
 package Net::OAuth2Server::Request::Authorization::Role::PKCE;
-
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use Role::Tiny;
 use Class::Method::Modifiers 'fresh';
@@ -43,8 +41,7 @@ fresh get_pkce_token => \&fresh__get_pkce_token;
 undef *fresh__get_pkce_token;
 
 package Net::OAuth2Server::Request::Token::AuthorizationCode::Role::PKCE;
-
-our $VERSION = '0.003';
+our $VERSION = '0.004';
 
 use Role::Tiny;
 use Class::Method::Modifiers 'fresh';

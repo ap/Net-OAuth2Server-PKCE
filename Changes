@@ -1,5 +1,8 @@
 Release history for Net-OAuth2Server-PKCE
 
+0.005 Tue 09 Aug 2022
+	- Correct test for error response description for bad code_verifier
+
 0.004 Tue 09 Aug 2022
 	- Correct error response description when code_verifier is bad
 	- Packaging fix to stop installing boilerplate.pl
